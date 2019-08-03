@@ -31,21 +31,35 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		LinkedRRSet<E> removedSet = new LinkedRRSet<E>();
 		Node<E> currentNode = firstNode; // Start from first node
 
-		// Throw exception if first and last are null
+		boolean rangeCondition;
+		
+		// Throw exception if first or last are not in the set
 		if (!contains(first) || !contains(last))
 		{
-			throw new NoSuchElementException("First or last specified element does not exist in the set");
+			//throw new NoSuchElementException("First or last specified element does not exist in the set");
 		}
 		
 		while (currentNode != null) // Iterate all the elements
 		{ 
-			
-			// If it is less than the first or greater than the last then add it to the removedSet
-			if (currentNode.element.compareTo(first) < 0 || currentNode.element.compareTo(last) >= 0)
+			// Null as a range to end
+			if (first == null && currentNode.element.compareTo(last) <= 0)
 			{
 				removedSet.add(currentNode.element);
 				remove(currentNode.element);
 			}
+			else if (last == null && currentNode.element.compareTo(first) >= 0)
+			{
+				removedSet.add(currentNode.element);
+				remove(currentNode.element);
+			}
+			// If it is less than the first or greater than the last then add it to the removedSet
+			//else if (currentNode.element.compareTo(first) < 0 ||
+			//		currentNode.element.compareTo(last) >= 0)
+			//{
+			//	removedSet.add(currentNode.element);
+			//	remove(currentNode.element);
+			//}
+			
 			
 			currentNode = currentNode.next; // Next node
 		}
@@ -55,16 +69,45 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 	
 	public LinkedRRSet<E> remove(E first, E last)
 	{
-		LinkedRRSet<E> newSet = new LinkedRRSet<E>();
-		
+		LinkedRRSet<E> removedSet = new LinkedRRSet<E>();
 		Node<E> currentNode = firstNode; // Start from first node
-		
-		while (currentNode.next != null && !currentNode.element.equals(first)) // Iterate till the first element in range
+
+		boolean rangeCondition;
+		boolean nullCondition;
+		// Throw exception if first and last are null
+		if (!contains(first) || !contains(last))
 		{
-			currentNode = currentNode.next;
+			throw new NoSuchElementException("First or last specified element does not exist in the set");
 		}
 		
-		return newSet;
+		while (currentNode != null) // Iterate all the elements
+		{ 
+			// Check whether the current element is in range
+			rangeCondition = (currentNode.element.compareTo(first) > 0 && 
+					currentNode.element.compareTo(last) <= 0);
+			// Check whether the first or last are null
+			nullCondition = ((first == null && currentNode.element.compareTo(last) <= 0) ||
+					(last == null && currentNode.element.compareTo(first) > 0));
+			
+			// If it is greater than the first or less than the last then add it to the removedSet
+			if (rangeCondition || nullCondition)
+			{
+				removedSet.add(currentNode.element);
+				remove(currentNode.element);
+			}
+			else if (first == null)
+			{
+				
+			}
+			else if (last == null)
+			{
+				
+			}
+			
+			currentNode = currentNode.next; // Next node
+		}
+		
+		return removedSet;
 	}
 
 	@Override
@@ -137,7 +180,7 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		
 		System.out.println();
 		
-		newList = list.retain(2, 8);
+		newList = list.retain(4, null);
 		it = newList.iterator();
 		while (it.hasNext())
 		{
