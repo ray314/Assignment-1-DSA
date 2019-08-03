@@ -4,6 +4,7 @@
 package linkedRRSet;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import lab3.LinkedSet;
 
@@ -24,16 +25,37 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		super(c);
 	}
 
-	public LinkedSet<E> retain(E first, E last)
+	public LinkedRRSet<E> retain(E first, E last)
 	{
-		LinkedSet<E> newSet = new LinkedSet<E>();
+		LinkedRRSet<E> removedSet = new LinkedRRSet<E>();
+		Node<E> currentNode = firstNode; // Start from first node
+
+		while (currentNode != null) // Iterate all the elements
+		{ 
+			
+			// If it is less than the first or greater than the last then add it to the removedSet
+			if (currentNode.element.compareTo(first) < 0 || currentNode.element.compareTo(last) >= 0)
+			{
+				removedSet.add(currentNode.element);
+				remove(currentNode.element);
+			}
+			
+			currentNode = currentNode.next; // Next node
+		}
 		
-		return newSet;
+		return removedSet;
 	}
 	
-	public LinkedSet<E> remove(E first, E last)
+	public LinkedRRSet<E> remove(E first, E last)
 	{
-		LinkedSet<E> newSet = new LinkedSet<E>();
+		LinkedRRSet<E> newSet = new LinkedRRSet<E>();
+		
+		Node<E> currentNode = firstNode; // Start from first node
+		
+		while (currentNode.next != null && !currentNode.element.equals(first)) // Iterate till the first element in range
+		{
+			currentNode = currentNode.next;
+		}
 		
 		return newSet;
 	}
@@ -92,7 +114,36 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		LinkedRRSet<Integer> list = new LinkedRRSet<Integer>();
+		LinkedRRSet<Integer> newList;
+		
+		for (int i = 7; i >= 1; i--)
+		{
+			list.add(i);
+		}
+		
+		Iterator<Integer> it = list.iterator();
+		while (it.hasNext())
+		{
+			System.out.print(it.next() + ", ");
+		}
+		
+		System.out.println();
+		
+		newList = list.retain(2, 6);
+		it = newList.iterator();
+		while (it.hasNext())
+		{
+			System.out.print(it.next() + ", ");
+		}
+		
+		System.out.println();
+		
+		it = list.iterator();
+		while (it.hasNext())
+		{
+			System.out.print(it.next() + ", ");
+		}
 	}
 
 }
