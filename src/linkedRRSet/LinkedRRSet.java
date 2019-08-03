@@ -5,6 +5,7 @@ package linkedRRSet;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import lab3.LinkedSet;
 
@@ -25,11 +26,17 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		super(c);
 	}
 
-	public LinkedRRSet<E> retain(E first, E last)
+	public LinkedRRSet<E> retain(E first, E last) throws NoSuchElementException
 	{
 		LinkedRRSet<E> removedSet = new LinkedRRSet<E>();
 		Node<E> currentNode = firstNode; // Start from first node
 
+		// Throw exception if first and last are null
+		if (!contains(first) || !contains(last))
+		{
+			throw new NoSuchElementException("First or last specified element does not exist in the set");
+		}
+		
 		while (currentNode != null) // Iterate all the elements
 		{ 
 			
@@ -130,7 +137,7 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		
 		System.out.println();
 		
-		newList = list.retain(2, 6);
+		newList = list.retain(2, 8);
 		it = newList.iterator();
 		while (it.hasNext())
 		{
