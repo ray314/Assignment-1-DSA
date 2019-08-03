@@ -24,8 +24,19 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		super(c);
 	}
 
-	//Node<E> m = new Node target
-	// if (firstnode == null || target.compareTo
+	public LinkedSet<E> retain(E first, E last)
+	{
+		LinkedSet<E> newSet = new LinkedSet<E>();
+		
+		return newSet;
+	}
+	
+	public LinkedSet<E> remove(E first, E last)
+	{
+		LinkedSet<E> newSet = new LinkedSet<E>();
+		
+		return newSet;
+	}
 
 	@Override
 	public boolean add(E o)
