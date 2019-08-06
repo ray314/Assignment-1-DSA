@@ -19,11 +19,14 @@ public class TimeTest {
         Random rand = new Random();
         long startTime = System.nanoTime();
         ArraySet<Integer> set = new ArraySet<Integer>();
+        int size = 1000000;
         
+        
+        System.out.println("Add:");
         // Code being measured here starts
-        for (int i = 0; i < 1000000; i++)
+        for (int i = 0; i < size; i++)
         {
-           set.add(rand.nextInt()); 
+           set.add(i); 
         }
         
         // Code being measured ends
@@ -31,6 +34,42 @@ public class TimeTest {
         long endTime = System.nanoTime();
         
         long timeElapsed = endTime - startTime;
+        
+        System.out.println("Execution time in nanoseconds: " + timeElapsed);
+        System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);
+        
+        startTime = System.nanoTime();
+        
+        // Code being measured here starts
+        for (int i = 0; i < size; i++)
+        {
+           set.remove(i); 
+        }
+        
+        // Code being measured ends
+        System.out.println("Remove:");
+        
+        endTime = System.nanoTime();
+        
+        timeElapsed = endTime - startTime;
+        
+        System.out.println("Execution time in nanoseconds: " + timeElapsed);
+        System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);
+        
+        System.out.println("Contains:");
+        startTime = System.nanoTime();
+        
+        // Code being measured here starts
+        for (int i = 0; i < size; i++)
+        {
+           set.contains(i); 
+        }
+        
+        // Code being measured ends
+        
+        endTime = System.nanoTime();
+        
+        timeElapsed = endTime - startTime;
         
         System.out.println("Execution time in nanoseconds: " + timeElapsed);
         System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);
