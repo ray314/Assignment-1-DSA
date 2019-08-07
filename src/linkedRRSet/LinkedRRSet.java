@@ -30,8 +30,9 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 	{
 		LinkedRRSet<E> removedSet = new LinkedRRSet<E>();
 		Node<E> currentNode = firstNode; // Start from first node
-
-		boolean rangeCondition;
+		Node<E> firstPosNode = null; // First position specified by first parameter
+		Node<E> lastPosNode = null; // Last position specified by last parameter
+		Node<E> tempNode = null;
 		
 		// Throw exception if first or last are not in the set
 		if (first != null && !contains(first))
@@ -43,8 +44,35 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 			throw new NoSuchElementException("Last specified element range does not exist in the set");
 		}
 		
+		//todo: iterate once, save the position of the specified first and last element
+		// then use that as range and cut off the rest
+		// Will loop while currentNode is not null and first and last nodes are null
+		while(currentNode != null && (firstPosNode == null || lastPosNode == null))
+		{
+			// if first equals to current node element
+			// then store the position. This condition is for the first range
+			// at the start of the list
+			if (first == currentNode.element && first != currentNode.next.element)
+			{
+				firstPosNode = currentNode;
+			}
+			// If first equals to the current next node
+			// then store the next node into firstPos and currentNode
+			// into tempNode
+			else if (first == currentNode.next.element)
+			{
+				firstPosNode = currentNode.next;
+				tempNode = currentNode; // Keep reference to the node before the specified one
+			}
+			// Exclusive
+			else if (last == currentNode.next.element)
+			{
+				lastPosNode = currentNode;
+				tempNode.next = currentNode.next; // Link node before first to next after last
+			}
+		}
 		
-		while (currentNode != null) // Iterate all the elements
+		/*while (currentNode != null) // Iterate all the elements
 		{ 	
 			// Only one of these if else blocks will execute
 			// If both ranges are null then add everything
@@ -75,7 +103,7 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 				}
 			}
 			currentNode = currentNode.next; // Next node
-		}
+		} */
 		
 		return removedSet;
 	}
