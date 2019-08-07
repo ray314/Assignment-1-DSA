@@ -19,7 +19,7 @@ public class TimeTest {
         Random rand = new Random();
         long startTime = System.nanoTime();
         ArraySet<Integer> set = new ArraySet<Integer>();
-        int size = 1000000;
+        int size = 100;
         
         
         System.out.println("Add:");
