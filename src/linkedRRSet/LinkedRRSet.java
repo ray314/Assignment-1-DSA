@@ -34,8 +34,14 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		Node<E> lastPosNode = null; // Last position specified by last parameter
 		Node<E> tempNode = null;
 		
+		// If first is null then set first to firstNode element
+		if (first == null)
+		{
+			first = firstNode.element;
+		}
+		
 		// Throw exception if first or last are not in the set
-		if (first != null && !contains(first))
+		if (!contains(first))
 		{
 			throw new NoSuchElementException("First specified element range does not exist in the set");
 		}
