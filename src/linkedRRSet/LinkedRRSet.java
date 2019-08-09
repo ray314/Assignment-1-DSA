@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import lab3.LinkedSet;
-
 /**
  * @author Justin Yeung
  * @param <E>
@@ -298,8 +296,8 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		
 		System.out.println();
 		
-		// Retain working properly and tested
-		retainSet = set.remove(1, 3);
+		// Retain and remove working properly and tested
+		retainSet = set.retain(2, 6);
 		it = retainSet.iterator();
 		System.out.print("retainList returned set: {");
 		while (it.hasNext())

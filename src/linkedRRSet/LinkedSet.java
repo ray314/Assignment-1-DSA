@@ -1,4 +1,4 @@
-package lab3;
+package linkedRRSet;
 
 /**
    A class that implements a set collection using a
