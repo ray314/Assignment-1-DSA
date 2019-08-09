@@ -8,6 +8,8 @@ package lab3;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import linkedRRSet.LinkedRRSet;
+
 /**
  *
  * @author fbb3628
@@ -16,17 +18,25 @@ public class TimeTest {
     
     public static void main(String[] args)
     {
-        Random rand = new Random();
+        //Random rand = new Random();
+        
+        LinkedRRSet<Integer> set = new LinkedRRSet<Integer>();
+        int size = 100000;
+        
+        for (int i = 7; i >= 1; i--)
+		{
+			set.add(i);
+		}
+
         long startTime = System.nanoTime();
-        ArraySet<Integer> set = new ArraySet<Integer>();
-        int size = 100;
-        
-        
-        System.out.println("Add:");
+        System.out.println("Retain:");
         // Code being measured here starts
         for (int i = 0; i < size; i++)
         {
-           set.add(i); 
+           set.retain(2,6); 
+           set.add(1);
+           set.add(6);
+           set.add(7);
         }
         
         // Code being measured ends
@@ -40,14 +50,18 @@ public class TimeTest {
         
         startTime = System.nanoTime();
         
+        System.out.println("Remove:");
         // Code being measured here starts
         for (int i = 0; i < size; i++)
         {
-           set.remove(i); 
+           set.remove(2,6); 
+           set.add(2);
+           set.add(3);
+           set.add(4);
+           set.add(5);
         }
         
         // Code being measured ends
-        System.out.println("Remove:");
         
         endTime = System.nanoTime();
         
@@ -56,7 +70,7 @@ public class TimeTest {
         System.out.println("Execution time in nanoseconds: " + timeElapsed);
         System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);
         
-        System.out.println("Contains:");
+        /*System.out.println("Contains:");
         startTime = System.nanoTime();
         
         // Code being measured here starts
@@ -72,6 +86,6 @@ public class TimeTest {
         timeElapsed = endTime - startTime;
         
         System.out.println("Execution time in nanoseconds: " + timeElapsed);
-        System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);
+        System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);*/
     }
 }

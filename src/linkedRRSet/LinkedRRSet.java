@@ -297,7 +297,7 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		System.out.println();
 		
 		// Retain and remove working properly and tested
-		retainSet = set.retain(2, 6);
+		retainSet = set.remove(2, 6);
 		it = retainSet.iterator();
 		System.out.print("retainList returned set: {");
 		while (it.hasNext())
