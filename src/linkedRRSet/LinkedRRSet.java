@@ -6,6 +6,7 @@ package linkedRRSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * @author Justin Yeung
@@ -29,13 +30,15 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		super(c);
 	}
 
-	public LinkedRRSet<E> retain(E first, E last) throws NoSuchElementException
+	public Set<E> retain(E first, E last) throws NoSuchElementException
 	{
 		LinkedRRSet<E> removeSet = new LinkedRRSet<E>();
 		currentNode = firstNode; // Start from first node                                                 
 		firstPosNode = null; // First position specified by first parameter                               
 		lastPosNode = null; // Last position specified by last parameter                                  
 		tempNode = null; // Temporary node for storing the nodes before firstPosNode and after lastPosNode
+		
+		handleRange(first, last); // Handle range input
 		
 		// If first is null then set first to firstNode element
 		if (first == null && last != null)
@@ -64,7 +67,6 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		
 		handleExceptions(first, last);
 		linkNodes(first, last);
-		
 		// If firstNode element is equal to first
 		if (firstNode.element == first)
 		{
@@ -78,26 +80,25 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 			// Set firstNode to firstPosNode
 			firstNode = firstPosNode;
 		}
-		
 		// If last is null
 		if (last == null)
 		{
 			// Set tempNode next to null, removing all nodes after it.
 			tempNode.next = null;
 		}
-		
-		
 		return removeSet;
 	}
 	
 	// Remove range
-	public LinkedRRSet<E> remove(E first, E last)
+	public Set<E> remove(E first, E last)
 	{
 		LinkedRRSet<E> removeSet = new LinkedRRSet<E>();
 		currentNode = firstNode; // Start from first node
 		firstPosNode = null; // First position specified by first parameter
 		lastPosNode = null; // Last position specified by last parameter
 		tempNode = null; // Temporary node for storing the nodes before firstPosNode and after lastPosNode
+		
+		handleRange(first, last); // Handle range input
 		
 		// If first is null then set first to firstNode element
 		if (first == null && last != null)
@@ -118,9 +119,7 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 			return removeSet;
 			// Rest of the code gets skipped
 		}
-		
-		handleExceptions(first, last);
-		
+		handleExceptions(first, last); // Handle invalid input
 		linkNodes(first, last);
 
 		// Link retainSet first node to firstPosNode
@@ -135,10 +134,16 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		else if (last == null)
 		{
 			tempNode.next = null;
-			
 		}
-		
 		return removeSet;
+	}
+	
+	private void handleRange(E first, E last)
+	{
+		if (first == last && first != null) // Don't let this occur if first = last except for null values
+		{
+			throw new IllegalArgumentException("This is not a range. Both first and last cannot be equal");
+		}
 	}
 
 	private void handleExceptions(E first, E last) {
@@ -179,7 +184,6 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 				firstPosNode = currentNode.next;
 				tempNode = currentNode; // Keep reference to the node before the specified one
 			}
-
 			// If last is not null then
 			else if (last != null)
 			{
@@ -199,12 +203,9 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 					{
 						tempNode.next = lastPosNode.next; // Link node before first to next after last
 					}
-
 					// Cut off the next node for current node
 					currentNode.next = null;
-
 				}
-				
 			}
 			// if first equals to firstNode element
 			// then store the position. This condition is for the first range
@@ -275,7 +276,7 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		LinkedRRSet<Integer> set = new LinkedRRSet<Integer>();
-		LinkedRRSet<Integer> retainSet;
+		Set<Integer> retainSet;
 		
 		for (int i = 7; i >= 1; i--)
 		{
@@ -297,7 +298,7 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		System.out.println();
 		
 		// Retain and remove working properly and tested
-		retainSet = set.remove(2, 6);
+		retainSet = set.retain(6, 7);
 		it = retainSet.iterator();
 		System.out.print("retainList returned set: {");
 		while (it.hasNext())

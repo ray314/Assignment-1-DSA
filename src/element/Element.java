@@ -20,7 +20,7 @@ public class Element implements Runnable {
 	private double currentTemp;
 	public static double heatConstant = 0.1;
 	private boolean stopRequested;
-	private String name;
+	public String name;
 
 	public final static double EPSILON = 0.01; // For comparing two doubles
 
@@ -119,6 +119,8 @@ public class Element implements Runnable {
 		{
 			eTemp[0] = element1.getTemperature();
 			eTemp[1] = element2.getTemperature();
+			System.out.println(element1.name + " temperature: " + eTemp[0]);
+			System.out.println(element2.name + " temperature: " + eTemp[1]);
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
