@@ -6,8 +6,7 @@ package linkedRRSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import lab3.LinkedSet;
+import java.util.Set;
 
 /**
  * @author Justin Yeung
@@ -15,7 +14,12 @@ import lab3.LinkedSet;
  *
  */
 public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
-
+	
+	private Node<E> currentNode; // Start from first node
+	private Node<E> firstPosNode; // First position specified by first parameter
+	private Node<E> lastPosNode; // Last position specified by last parameter
+	private Node<E> tempNode; // Temporary node for storing the nodes before firstPosNode and after lastPosNode
+	
 	public LinkedRRSet()
 	{
 		super();
@@ -26,41 +30,151 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 		super(c);
 	}
 
-	public LinkedRRSet<E> retain(E first, E last) throws NoSuchElementException
+	public Set<E> retain(E first, E last) throws NoSuchElementException
 	{
-		LinkedRRSet<E> removedSet = new LinkedRRSet<E>();
-		Node<E> currentNode = firstNode; // Start from first node
-		Node<E> firstPosNode = null; // First position specified by first parameter
-		Node<E> lastPosNode = null; // Last position specified by last parameter
-		Node<E> tempNode = null;
+		LinkedRRSet<E> removeSet = new LinkedRRSet<E>();
+		currentNode = firstNode; // Start from first node                                                 
+		firstPosNode = null; // First position specified by first parameter                               
+		lastPosNode = null; // Last position specified by last parameter                                  
+		tempNode = null; // Temporary node for storing the nodes before firstPosNode and after lastPosNode
+		
+		handleRange(first, last); // Handle range input
 		
 		// If first is null then set first to firstNode element
-		if (first == null)
+		if (first == null && last != null)
 		{
+			// If last value is equal to first element then keep only the first node
+			if (last == firstNode.element)
+			{
+				removeSet.firstNode = firstNode.next;
+				firstNode.next = null;
+				return removeSet;
+			}
 			first = firstNode.element;
 		}
+		// If first and last are the same or null then return an empty set
+		else if (first == last || first == null && last == null)
+		{
+			return removeSet;
+			// Rest of the code gets skipped
+		}
+		// If first equals to first node element and last is null (covering the whole set)
+		else if (first == firstNode.element && last == null)
+		{
+			return removeSet; // Retain all elements in set
+			// Rest of the code gets skipped
+		}
 		
+		handleExceptions(first, last);
+		linkNodes(first, last);
+		// If firstNode element is equal to first
+		if (firstNode.element == first)
+		{
+			// Set returned set first node to tempNode (before firstPosNode)
+			removeSet.firstNode = tempNode;
+		}
+		else 
+		{
+			// Set returned set first node to firstNode
+			removeSet.firstNode = firstNode;
+			// Set firstNode to firstPosNode
+			firstNode = firstPosNode;
+		}
+		// If last is null
+		if (last == null)
+		{
+			// Set tempNode next to null, removing all nodes after it.
+			tempNode.next = null;
+		}
+		return removeSet;
+	}
+	
+	// Remove range
+	public Set<E> remove(E first, E last)
+	{
+		LinkedRRSet<E> removeSet = new LinkedRRSet<E>();
+		currentNode = firstNode; // Start from first node
+		firstPosNode = null; // First position specified by first parameter
+		lastPosNode = null; // Last position specified by last parameter
+		tempNode = null; // Temporary node for storing the nodes before firstPosNode and after lastPosNode
+		
+		handleRange(first, last); // Handle range input
+		
+		// If first is null then set first to firstNode element
+		if (first == null && last != null)
+		{
+			if (last == firstNode.element)
+			{
+				removeSet.firstNode = firstNode;
+				firstNode = firstNode.next;
+				removeSet.firstNode.next = null;
+				return removeSet;
+			}
+			first = firstNode.element;
+			
+		}
+		// If first and last are the same or null then return an empty set
+		else if (first == last || first == null && last == null)
+		{
+			return removeSet;
+			// Rest of the code gets skipped
+		}
+		handleExceptions(first, last); // Handle invalid input
+		linkNodes(first, last);
+
+		// Link retainSet first node to firstPosNode
+		removeSet.firstNode = firstPosNode;
+		
+		// If first element is at first node then link firstNode to tempNode (lastPosNode)
+		if (firstNode == firstPosNode)
+		{
+			firstNode = tempNode;
+		}
+		// If last is null then set tempNode next to null
+		else if (last == null)
+		{
+			tempNode.next = null;
+		}
+		return removeSet;
+	}
+	
+	private void handleRange(E first, E last)
+	{
+		if (first == last && first != null) // Don't let this occur if first = last except for null values
+		{
+			throw new IllegalArgumentException("This is not a range. Both first and last cannot be equal");
+		}
+	}
+
+	private void handleExceptions(E first, E last) {
 		// Throw exception if first or last are not in the set
 		if (!contains(first))
 		{
-			throw new NoSuchElementException("First specified element range does not exist in the set");
+			throw new NoSuchElementException(first.toString() + " does not exist in the set");
 		}
 		else if (last != null && !contains(last))
 		{
-			throw new NoSuchElementException("Last specified element range does not exist in the set");
+			throw new NoSuchElementException(last.toString() + " does not exist in the set");
 		}
-		
-		//todo: iterate once, save the position of the specified first and last element
-		// then use that as range and cut off the rest
+		// if first is greater than last element and last is not null
+		else if (last != null)
+		{
+			if (first.compareTo(last) > 0)
+			{
+				throw new IllegalArgumentException(first.toString() + " is greater than " + last.toString());
+			}
+		}
+	}
+
+	private void linkNodes(E first, E last) {
 		// Will loop while currentNode is not null and first and last nodes are null
 		while(currentNode != null && (firstPosNode == null || lastPosNode == null))
 		{
-			// if first equals to current node element
-			// then store the position. This condition is for the first range
-			// at the start of the list
-			if (first == currentNode.element && first != currentNode.next.element)
+			// if next node is null then set lastPosNode to currentNode
+			// The last node next will always be null
+			if (currentNode.next == null)
 			{
-				firstPosNode = currentNode;
+				lastPosNode = currentNode;
 			}
 			// If first equals to the current next node
 			// then store the next node into firstPos and currentNode
@@ -70,92 +184,42 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 				firstPosNode = currentNode.next;
 				tempNode = currentNode; // Keep reference to the node before the specified one
 			}
-			// Exclusive
-			else if (last == currentNode.next.element)
+			// If last is not null then
+			else if (last != null)
 			{
-				lastPosNode = currentNode;
-				tempNode.next = currentNode.next; // Link node before first to next after last
-			}
-		}
-		
-		/*while (currentNode != null) // Iterate all the elements
-		{ 	
-			// Only one of these if else blocks will execute
-			// If both ranges are null then add everything
-			if (first == null && last == null)
-			{
-				removedSet.add(currentNode.element);
-				remove(currentNode.element);
-			}
-			// Do the open ended range
-			else if (first == null && currentNode.element.compareTo(last) < 0)
-			{
-				removedSet.add(currentNode.element);
-				remove(currentNode.element);
-			}
-			else if (last == null && currentNode.element.compareTo(first) > 0)
-			{
-				removedSet.add(currentNode.element);
-				remove(currentNode.element);
-			}
-			// If both ranges are not null then proceed to do the normal range
-			else if (first != null && last != null)
-			{
-				if (currentNode.element.compareTo(first) < 0 ||
-						currentNode.element.compareTo(last) >= 0)
+				// Exclusive
+				if (last == currentNode.next.element)
 				{
-					removedSet.add(currentNode.element);
-					remove(currentNode.element);
+					// Save current node to lastPosNode 
+					lastPosNode = currentNode;
+
+					if (tempNode == null)
+					{
+						// If tempNode is null or firstPosNode is at firstNode
+						// then set tempNode to lastPosNode.next
+						tempNode = lastPosNode.next;
+					}
+					else
+					{
+						tempNode.next = lastPosNode.next; // Link node before first to next after last
+					}
+					// Cut off the next node for current node
+					currentNode.next = null;
 				}
 			}
-			currentNode = currentNode.next; // Next node
-		} */
-		
-		return removedSet;
+			// if first equals to firstNode element
+			// then store the position. This condition is for the first range
+			// at the start of the list
+			if (first == currentNode.element && currentNode == firstNode)
+			{
+				// Set firstPosNode at firstNode
+				firstPosNode = firstNode;
+			}
+			currentNode = currentNode.next;
+		}
 	}
 	
-	public LinkedRRSet<E> remove(E first, E last)
-	{
-		LinkedRRSet<E> removedSet = new LinkedRRSet<E>();
-		Node<E> currentNode = firstNode; // Start from first node
 
-		boolean rangeCondition;
-		boolean nullCondition;
-		// Throw exception if first and last are null
-		if (!contains(first) || !contains(last))
-		{
-			throw new NoSuchElementException("First or last specified element does not exist in the set");
-		}
-		
-		while (currentNode != null) // Iterate all the elements
-		{ 
-			// Check whether the current element is in range
-			rangeCondition = (currentNode.element.compareTo(first) > 0 && 
-					currentNode.element.compareTo(last) <= 0);
-			// Check whether the first or last are null
-			nullCondition = ((first == null && currentNode.element.compareTo(last) <= 0) ||
-					(last == null && currentNode.element.compareTo(first) > 0));
-			
-			// If it is greater than the first or less than the last then add it to the removedSet
-			if (rangeCondition || nullCondition)
-			{
-				removedSet.add(currentNode.element);
-				remove(currentNode.element);
-			}
-			else if (first == null)
-			{
-				
-			}
-			else if (last == null)
-			{
-				
-			}
-			
-			currentNode = currentNode.next; // Next node
-		}
-		
-		return removedSet;
-	}
 
 	@Override
 	public boolean add(E o)
@@ -211,39 +275,55 @@ public class LinkedRRSet<E extends Comparable<E>> extends LinkedSet<E> {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		LinkedRRSet<Integer> list = new LinkedRRSet<Integer>();
-		LinkedRRSet<Integer> retainList;
+		LinkedRRSet<Integer> set = new LinkedRRSet<Integer>();
+		Set<Integer> retainSet;
 		
 		for (int i = 7; i >= 1; i--)
 		{
-			list.add(i);
+			set.add(i);
 		}
 		
-		Iterator<Integer> it = list.iterator();
-		System.out.print("List Returned set: ");
+		Iterator<Integer> it = set.iterator();
+		System.out.print("List Returned set: {");
 		while (it.hasNext())
 		{
-			System.out.print(it.next() + ", ");
+			System.out.print(it.next());
+			if (it.hasNext())
+			{
+				System.out.print(", ");
+			}
 		}
+		System.out.print("}");
 		
 		System.out.println();
 		
-		retainList = list.retain(5, null);
-		it = retainList.iterator();
-		System.out.print("retainList returned set: ");
+		// Retain and remove working properly and tested
+		retainSet = set.retain(6, 7);
+		it = retainSet.iterator();
+		System.out.print("retainList returned set: {");
 		while (it.hasNext())
 		{
-			System.out.print(it.next() + ", ");
+			System.out.print(it.next());
+			if (it.hasNext())
+			{
+				System.out.print(", ");
+			}
 		}
+		System.out.print("}");
 		
 		System.out.println();
 		
-		it = list.iterator();
-		System.out.print("List returned set: ");
+		it = set.iterator();
+		System.out.print("List returned set: {");
 		while (it.hasNext())
 		{
-			System.out.print(it.next() + ", ");
+			System.out.print(it.next());
+			if (it.hasNext())
+			{
+				System.out.print(", ");
+			}
 		}
+		System.out.print("}");
 	}
 
 }

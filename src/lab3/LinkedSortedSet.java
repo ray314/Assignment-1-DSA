@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
+import linkedRRSet.LinkedSet;
+
 /**
  *
  * @author fbb3628
