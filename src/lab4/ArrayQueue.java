@@ -57,18 +57,25 @@ public class ArrayQueue<E> implements QueueADT<E> {
 		
 		if (rear >= elements.length)
 		{
-			rear = 0;
+			rear = 0; // If rear is at the end of the array, bring it back to 0
 		}
 	}
 	
 	@Override
 	public E dequeue() throws NoSuchElementException {
 		// TODO Work on dequeue, front variable
+		
 		if (numElements > 0)
 		{
+			if (front >= elements.length)
+			{
+				front = 0; // If front is at the end of the array, bring it back to 0
+			}
+			
 			E element = elements[front];
 			elements[front] = null;
-			front++;
+			front++; // Move front pointer to the next in array
+			numElements--; // Decrease the number of elements
 			return element;
 		}
 
@@ -116,7 +123,28 @@ public class ArrayQueue<E> implements QueueADT<E> {
 		queue.enqueue(1);
 		queue.enqueue(2);
 		queue.enqueue(3);
-				
+		queue.enqueue(4);
+		
+		queue.enqueue(1);
+		queue.enqueue(2);
+		queue.enqueue(3);
+		queue.enqueue(4);
+		
+		System.out.println(queue.dequeue());
+		System.out.println(queue.dequeue());
+		System.out.println(queue.dequeue());
+		
+		queue.enqueue(1);
+		queue.enqueue(2);
+		queue.enqueue(3);
+		
+		System.out.println(queue.dequeue());
+		System.out.println(queue.dequeue());
+		System.out.println(queue.dequeue());
+		
+		queue.enqueue(1);
+		queue.enqueue(2);
+		queue.enqueue(3);
 	}
 
 
