@@ -104,13 +104,18 @@ public class ArrayQueue<E> implements QueueADT<E> {
 	@Override
 	public boolean isEmpty() {
 		// TODO Auto-generated method stub
+		if (numElements <= 0)
+		{
+			return true;
+		}
+		
 		return false;
 	}
 
 	@Override
 	public int size() {
 		// TODO Auto-generated method stub
-		return 0;
+		return numElements;
 	}
 	
 	/**

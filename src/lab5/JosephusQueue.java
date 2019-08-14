@@ -41,6 +41,32 @@ public class JosephusQueue {
 	      counter = gap-1; // first soldier to remove in list
 	      // treating the list as circular, remove every nth element
 	      // until the list is empty
+	      
+	      System.out.print("The order is: ");
+	      time.start();
+	      
+	      // Start dequeueing
+	      while (!queue.isEmpty())
+	      {
+	    	  // The gap between soldiers
+	    	  for (int i = 0; i < counter; i++)
+	    	  {
+	    		  Integer element = queue.dequeue(); // 
+	    		  queue.enqueue(element);
+	    	  }
+	    	  
+	    	  numPeople--;
+	    	  if (numPeople > 0)
+	    	  {
+	    		  System.out.print(queue.dequeue());
+		    	  System.out.print(", ");
+	    	  }
+	    	  
+	    	  //break;
+	      }
+	      time.end();
+	      time.printTime();
+	      
 	}
 
 }
