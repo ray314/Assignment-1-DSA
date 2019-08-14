@@ -17,6 +17,16 @@ import lab4.QueueADT;
  */
 public class JosephusQueue {
 
+	public int josephus(int n, int k)
+	{
+		if (n == 1)
+			return 1;
+		else
+		{
+			return (josephus(n-1, k) + k-1) % n + 1;
+		}
+	}
+	
 	/**
 	 * @param args
 	 */
@@ -26,6 +36,10 @@ public class JosephusQueue {
 	      QueueADT<Integer> queue = new ArrayQueue<Integer>();
 	      Scanner in = new Scanner(System.in);
 	      TimeTest time = new TimeTest();
+	      JosephusQueue test = new JosephusQueue();
+	      
+	      System.out.println(test.josephus(100, 20));
+	      
 	      
 	      // get the initial number of soldiers
 	      System.out.print("Enter the number of soldiers: ");
@@ -41,6 +55,7 @@ public class JosephusQueue {
 	      counter = gap-1; // first soldier to remove in list
 	      // treating the list as circular, remove every nth element
 	      // until the list is empty
+	      Integer element;
 	      
 	      System.out.print("The order is: ");
 	      time.start();
@@ -51,12 +66,11 @@ public class JosephusQueue {
 	    	  // The gap between soldiers
 	    	  for (int i = 0; i < counter; i++)
 	    	  {
-	    		  Integer element = queue.dequeue(); // 
+	    		  element = queue.dequeue(); // 
 	    		  queue.enqueue(element);
 	    	  }
 	    	  
-	    	  numPeople--;
-	    	  if (numPeople > 0)
+	    	  if (queue.size() > 0)
 	    	  {
 	    		  System.out.print(queue.dequeue());
 		    	  System.out.print(", ");
@@ -65,6 +79,7 @@ public class JosephusQueue {
 	    	  //break;
 	      }
 	      time.end();
+	      System.out.println();
 	      time.printTime();
 	      
 	}
