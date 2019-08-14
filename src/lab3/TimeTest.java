@@ -16,6 +16,27 @@ import linkedRRSet.LinkedRRSet;
  */
 public class TimeTest {
     
+	private long startTime;
+	private long timeElapsed;
+	
+	public void start()
+	{
+		startTime = System.nanoTime();
+	}
+	
+	public void end()
+	{
+		long endTime = System.nanoTime();
+        
+        timeElapsed = endTime - startTime;
+	}
+	
+	public void printTime()
+	{
+		System.out.println("Execution time in nanoseconds: " + timeElapsed);
+        System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);
+	}
+	
     public static void main(String[] args)
     {
         //Random rand = new Random();
