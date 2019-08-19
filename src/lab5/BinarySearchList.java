@@ -23,32 +23,32 @@ public class BinarySearchList<E extends Comparable<E>> {
 	
 	public int search(E target)
 	{
+		ListIterator<E> it = list.listIterator();
 		if (target == null)
 		{
 			throw new NullPointerException("search target is null");
 		}
-		return search(target, 0, list.size());
+		return search(target, 0, list.size(), it);
 	}
 	
 	private int search(E target, int start, int end, ListIterator<E> iterator)
 	{
-		traversals++;
+		
 		if (start >= end)
 		{
 			return -start-1;
 		}
 		else 
 		{
-			
-			
 			int midpoint = (start+end)/2;
-			ListIterator<E> it = list.listIterator(midpoint);
+			//iterator = list.listIterator(midpoint);
 			
-			if (midpoint < iterator.nextIndex())
+			if (iterator.nextIndex() < midpoint)
 			{
 				for (int i = iterator.nextIndex(); i < midpoint; i++)
 				{
 					iterator.next();
+					traversals++;
 				}
 			}
 			else
@@ -56,6 +56,7 @@ public class BinarySearchList<E extends Comparable<E>> {
 				for (int i = iterator.previousIndex(); i >= midpoint; i--)
 				{
 					iterator.previous();
+					traversals++;
 				}
 			}
 			
@@ -67,15 +68,14 @@ public class BinarySearchList<E extends Comparable<E>> {
 			}
 			else if (comparison < 0)
 			{
-				it.previous();
+				iterator.previous();
 				
-				return search(target, start, it.previousIndex());
+				return search(target, start, iterator.previousIndex(), iterator);
 			}
 			else
 			{
-				it.next();
 				//traversals++;
-				return search(target, midpoint+1, it.nextIndex()+1);
+				return search(target, midpoint+1, iterator.nextIndex(), iterator);
 			}
 		}
 	}
@@ -87,14 +87,14 @@ public class BinarySearchList<E extends Comparable<E>> {
 		// TODO Auto-generated method stub
 		List<Integer> list = new LinkedList<Integer>();
 		
-		for (int i = 1; i <= 100000; i++)
+		for (int i = 1; i <= 7; i++)
 		{
 			list.add(i);
 		}
 		
 		BinarySearchList<Integer> listSearch = new BinarySearchList<Integer>(list);
 		
-		Integer target = 40000;
+		Integer target = 4;
 		int index = listSearch.search(target);
 		
 		if (index >= 0)
