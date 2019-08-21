@@ -15,6 +15,7 @@ public class BinarySearchList<E extends Comparable<E>> {
 
 	private List<E> list;
 	public int traversals = 0;
+	public int compares = 0;
 	
 	public BinarySearchList(List<E> list)
 	{
@@ -45,7 +46,7 @@ public class BinarySearchList<E extends Comparable<E>> {
 			
 			if (iterator.nextIndex() < midpoint)
 			{
-				for (int i = iterator.nextIndex(); i < midpoint; i++)
+				for (int i = iterator.nextIndex(); i <= midpoint; i++)
 				{
 					iterator.next();
 					traversals++;
@@ -53,7 +54,7 @@ public class BinarySearchList<E extends Comparable<E>> {
 			}
 			else
 			{
-				for (int i = iterator.previousIndex(); i >= midpoint; i--)
+				for (int i = iterator.previousIndex(); i > midpoint; i--)
 				{
 					iterator.previous();
 					traversals++;
@@ -61,6 +62,7 @@ public class BinarySearchList<E extends Comparable<E>> {
 			}
 			
 			int comparison = target.compareTo(iterator.next());
+			compares++;
 			
 			if (comparison == 0)
 			{
@@ -87,14 +89,14 @@ public class BinarySearchList<E extends Comparable<E>> {
 		// TODO Auto-generated method stub
 		List<Integer> list = new LinkedList<Integer>();
 		
-		for (int i = 1; i <= 7; i++)
+		for (int i = 0; i < 100; i++)
 		{
 			list.add(i);
 		}
 		
 		BinarySearchList<Integer> listSearch = new BinarySearchList<Integer>(list);
 		
-		Integer target = 4;
+		Integer target = 10;
 		int index = listSearch.search(target);
 		
 		if (index >= 0)
@@ -108,8 +110,8 @@ public class BinarySearchList<E extends Comparable<E>> {
 		
 		//ListIterator<Integer> it = list.listIterator(7);
 		
-		System.out.println(listSearch.traversals);
-		
+		System.out.println("Number of traversals: " + listSearch.traversals);
+		System.out.println("Number of compares: " + listSearch.compares);
 		
 	}
 
