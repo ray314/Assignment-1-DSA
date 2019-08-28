@@ -12,25 +12,33 @@ import lab3.TimeTest;
 
 public class ArraySorter<E extends Comparable>
 {
-   public void selectionSort(E[] list)
+	public int QSMSCompares;
+   public int selectionSort(E[] list)
    {  int indexMin; // index of least element
+   		int numOfCompares = 0;
       E temp; // temporary reference to an element for swapping
       for (int i=0; i<list.length-1; i++)
       {  // find the least element that has index>=i
          indexMin = i;
          for (int j=i+1; j<list.length; j++)
          {  if (list[j].compareTo(list[indexMin])<0)
-               indexMin = j;
+         	{
+        	 	indexMin = j;
+        	 	numOfCompares++;
+         	}
+               
          }
          // swap the element at indexMin with the element at i
          temp = list[indexMin];
          list[indexMin] = list[i];
          list[i] = temp;
       }
+      return numOfCompares;
    }
    
-   public void insertionSort(E[] list)
+   public int insertionSort(E[] list)
    {  E elementInsert;
+   		int numOfCompares = 0;
       for (int i=1; i<list.length; i++)
       {  // get the element at index i to insert at some index<=i
          elementInsert = list[i];
@@ -41,14 +49,17 @@ public class ArraySorter<E extends Comparable>
          {  // shift element at insertIndex-1 along one to make space
             list[indexInsert] = list[indexInsert-1];
             indexInsert--;
+            numOfCompares++;
          }
          // insert the element
          list[indexInsert] = elementInsert;
       }
+      return numOfCompares;
    }
    
-   public void bubbleSort(E[] list)
+   public int bubbleSort(E[] list)
    {  E temp; // temporary reference to an element for swapping
+   		int numOfCompares = 0;
       for (int i=list.length-1; i>=0; i--)
       {  // pass through indices 0..i and bubble (swap) adjacent
          // elements if out of order
@@ -58,13 +69,17 @@ public class ArraySorter<E extends Comparable>
                temp = list[j+1];
                list[j+1] = list[j];
                list[j] = temp;
+               numOfCompares++;
             }
          }         
       }
+      return numOfCompares;
    }
    
    public void quickSort(E[] list)
-   {  quickSortSegment(list, 0, list.length);
+   {  
+	   QSMSCompares = 0;
+	   quickSortSegment(list, 0, list.length);
    }
    
    // recursive method which applies quick sort to the portion
@@ -96,10 +111,18 @@ public class ArraySorter<E extends Comparable>
       {  // find element starting from left greater than partition
          while (list[leftIndex].compareTo(partitionElement) <= 0
             && leftIndex<rightIndex)
-            leftIndex++; // this index is on correct side of partition
-         // find element starting from right less than partition
+         {
+        	 leftIndex++; // this index is on correct side of partition
+             // find element starting from right less than partition
+        	 QSMSCompares++;
+         }
+            
          while (list[rightIndex].compareTo(partitionElement) > 0)
-            rightIndex--; // this index is on correct side of partition
+         {
+        	 rightIndex--; // this index is on correct side of partition
+        	 QSMSCompares++;
+         }
+            
          if (leftIndex<rightIndex)
          {  // swap these two elements
             temp = list[leftIndex];
@@ -114,7 +137,9 @@ public class ArraySorter<E extends Comparable>
    }
    
    public void mergeSort(E[] list)
-   {  mergeSortSegment(list, 0, list.length);
+   {
+	   QSMSCompares = 0;
+	   mergeSortSegment(list, 0, list.length);
    }
 
    // recursive method which applies merge sort to the portion
@@ -137,12 +162,24 @@ public class ArraySorter<E extends Comparable>
          for (int i=0; i<numElements; i++)
          {  // determine which element to next put in list
             if (indexLeft<(middle-start))//left part still has elements
-            {  if (indexRight<(end-start))// right part also has elem
-               {  if (tempList[indexLeft].compareTo
-                     (tempList[indexRight])<0) // left element smaller 
-                     list[start+i] = tempList[indexLeft++];
-                  else // right element smaller
-                     list[start+i] = tempList[indexRight++];
+            {  
+            	if (indexRight<(end-start))// right part also has elem
+                {  
+            		if (tempList[indexLeft].compareTo
+                     (tempList[indexRight])<0)
+               		 {
+            	     // left element smaller 
+            			list[start+i] = tempList[indexLeft++];
+            			QSMSCompares++;
+               		 }
+                     
+                     else
+                     {
+                    	 list[start+i] = tempList[indexRight++];
+                    	 QSMSCompares++;
+                	   // right element smaller
+                     }
+                     
                }
                else // take element from left part
                   list[start+i] = tempList[indexLeft++];
@@ -156,8 +193,7 @@ public class ArraySorter<E extends Comparable>
    // driver main method to test one of the algorithms
    public static void main(String[] args)
    {  ArraySorter<Integer> sorter = new ArraySorter<Integer>();
-      String[] list = {"cow", "fly", "dog", "bat", "fox", "cat", "eel",
-         "ant"};
+      
       Integer[] numbers = new Integer[10000];
       Random rand = new Random();
       
@@ -168,11 +204,234 @@ public class ArraySorter<E extends Comparable>
       
       TimeTest test = new TimeTest();
       
+      System.out.println("\n Quick sort \n");
+      System.out.println("Random collection:");
+      
       test.start();
       sorter.quickSort(numbers);
       test.end();
       
       test.printTime();
+      System.out.println("Number of compares: " + sorter.QSMSCompares);
       
+      //////////////////////////////////////////////////////////////////////////////
+      System.out.println();
+      
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  numbers[i] = numbers.length - i;
+      }
+      
+      System.out.println("Decreasing order collection:");
+      
+      test.start();
+      sorter.quickSort(numbers);
+      test.end();
+      
+      test.printTime();
+      System.out.println("Number of compares: " + sorter.QSMSCompares);
+      
+      //////////////////////////////////////////////////////////////////////////////
+      System.out.println();
+
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  if (i % 5 == 0) // every 5 numbers, we will have a random one
+    	  {
+    		  numbers[i] = i + rand.nextInt(5) + 1;
+    	  }
+    	  else
+    	  {
+    		  numbers[i] = i;
+    	  }
+    	  
+      }
+
+      System.out.println("Almost ordered collection:");
+
+      test.start();
+      sorter.quickSort(numbers);
+      test.end();
+
+      test.printTime();
+      System.out.println("Number of compares: " + sorter.QSMSCompares);
+      
+      /////////////////////////////////////////////////////////////////////////////////
+      System.out.println("\n Merge sort \n");
+      /////////////////////////////////////////////////////////////////////////////////
+      
+      System.out.println("Random collection:");
+      
+      test.start();
+      sorter.mergeSort(numbers);
+      test.end();
+      
+      test.printTime();
+      System.out.println("Number of compares: " + sorter.QSMSCompares);
+      
+      //////////////////////////////////////////////////////////////////////////////
+      System.out.println();
+      
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  numbers[i] = numbers.length - i;
+      }
+      
+      System.out.println("Decreasing order collection:");
+      
+      test.start();
+      sorter.mergeSort(numbers);
+      test.end();
+      
+      test.printTime();
+      System.out.println("Number of compares: " + sorter.QSMSCompares);
+      
+      //////////////////////////////////////////////////////////////////////////////
+      System.out.println();
+
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  if (i % 5 == 0) // every 5 numbers, we will have a random one
+    	  {
+    		  numbers[i] = i + rand.nextInt(5) + 1;
+    	  }
+    	  else
+    	  {
+    		  numbers[i] = i;
+    	  }
+    	  
+      }
+
+      System.out.println("Almost ordered collection:");
+
+      test.start();
+      sorter.mergeSort(numbers);
+      test.end();
+
+      test.printTime();
+      System.out.println("Number of compares: " + sorter.QSMSCompares);
+      
+      /////////////////////////////////////////////////////////////////////////////////
+      System.out.println("\n Selection sort: \n");
+      /////////////////////////////////////////////////////////////////////////////////
+      // Selection sort
+      int compares;
+      
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  numbers[i] = rand.nextInt(10000);
+      }
+      
+      System.out.println("Random collection:");
+      
+      test.start();
+      compares = sorter.selectionSort(numbers);
+      test.end();
+      
+      test.printTime();
+      System.out.println("Number of compares: " + compares);
+      
+      //////////////////////////////////////////////////////////////////////////////
+      System.out.println();
+      
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  numbers[i] = numbers.length - i;
+      }
+      
+      System.out.println("Decreasing order collection:");
+      
+      test.start();
+      compares = sorter.selectionSort(numbers);
+      test.end();
+      
+      test.printTime();
+      System.out.println("Number of compares: " + compares);
+      
+      //////////////////////////////////////////////////////////////////////////////
+      System.out.println();
+
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  if (i % 5 == 0) // every 5 numbers, we will have a random one
+    	  {
+    		  numbers[i] = i + rand.nextInt(5) + 1;
+    	  }
+    	  else
+    	  {
+    		  numbers[i] = i;
+    	  }
+    	  
+      }
+
+      System.out.println("Almost ordered collection:");
+
+      test.start();
+      compares = sorter.selectionSort(numbers);
+      test.end();
+
+      test.printTime();
+      System.out.println("Number of compares: " + compares);
+
+      /////////////////////////////////////////////////////////////////////////////////
+      System.out.println("\n Insertion sort: \n");
+      /////////////////////////////////////////////////////////////////////////////////
+      // Selection sort
+
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  numbers[i] = rand.nextInt(10000);
+      }
+
+      System.out.println("Random collection:");
+
+      test.start();
+      compares = sorter.insertionSort(numbers);
+      test.end();
+
+      test.printTime();
+      System.out.println("Number of compares: " + compares);
+
+      //////////////////////////////////////////////////////////////////////////////
+      System.out.println();
+
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  numbers[i] = numbers.length - i;
+      }
+
+      System.out.println("Decreasing order collection:");
+
+      test.start();
+      compares = sorter.insertionSort(numbers);
+      test.end();
+
+      test.printTime();
+      System.out.println("Number of compares: " + compares);
+
+      //////////////////////////////////////////////////////////////////////////////
+      System.out.println();
+
+      for (int i = 0; i < numbers.length; i++)
+      {
+    	  if (i % 5 == 0) // every 5 numbers, we will have a random one
+    	  {
+    		  numbers[i] = i + rand.nextInt(5) + 1;
+    	  }
+    	  else
+    	  {
+    		  numbers[i] = i;
+    	  }
+
+      }
+
+      System.out.println("Almost ordered collection:");
+
+      test.start();
+      compares = sorter.insertionSort(numbers);
+      test.end();
+
+      test.printTime();
+      System.out.println("Number of compares: " + compares);
    }
 }
