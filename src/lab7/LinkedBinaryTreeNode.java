@@ -4,6 +4,7 @@
 package lab7;
 
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,6 +22,7 @@ public class LinkedBinaryTreeNode<E> implements MutableTreeNode {
 	private MutableTreeNode parent;
 	private MutableTreeNode leftChild;
 	private MutableTreeNode rightChild;
+	private LinkedList<MutableTreeNode> children;
 	/**
 	 * 
 	 */
@@ -29,6 +31,7 @@ public class LinkedBinaryTreeNode<E> implements MutableTreeNode {
 		parent = null;
 		leftChild = null;
 		rightChild = null;
+		children = new LinkedList<MutableTreeNode>();
 	}
 
 	/* (non-Javadoc)
@@ -39,38 +42,26 @@ public class LinkedBinaryTreeNode<E> implements MutableTreeNode {
 		// TODO Auto-generated method stub
 		class Enumerator<E> implements Enumeration<E>
 		{
-			private List<MutableTreeNode> list;
+			private Iterator<E> iterator;
 			
-			public Enumerator()
+			public Enumerator(Iterator<E> iterator)
 			{
-				list = new LinkedList<MutableTreeNode>();
-				if (leftChild != null && rightChild != null)
-				{
-					list.add(leftChild);
-					list.add(rightChild);
-				}
-				else if (leftChild != null)
-				{
-					list.add(leftChild);
-				}
-				else if (rightChild != null)
-				{
-					list.add(rightChild);
-				}
-				
+				this.iterator = iterator;
 			}
 
 			public boolean hasMoreElements()
 			{  
-				return list.iterator().hasNext();
+				return iterator.hasNext();
 			}
 
 			public E nextElement()
 			{  
-				return list.iterator().next();
+				return iterator.next();
 			}
 		}
-		return null;
+		
+		return (Enumeration<E>) 
+				(new Enumerator(children.iterator()));
 	}
 
 	/* (non-Javadoc)
@@ -188,6 +179,7 @@ public class LinkedBinaryTreeNode<E> implements MutableTreeNode {
 		{
 			throw new IllegalArgumentException("Index must be 0 or 1");
 		}
+		children.add(index, child);
 		child.setParent(this);
 	}
 
@@ -221,11 +213,13 @@ public class LinkedBinaryTreeNode<E> implements MutableTreeNode {
 		{
 			leftChild = null;
 			node.setParent(null);
+			children.remove(0);
 		}
 		else if (rightChild == node)
 		{
 			rightChild = null;
 			node.setParent(null);
+			children.remove(1);
 		}
 		else
 		{
@@ -263,5 +257,24 @@ public class LinkedBinaryTreeNode<E> implements MutableTreeNode {
 		
 		this.element = (E)element; // unchecked, can throw exception
 	}
+	
+	public E getUserObject()
+	{
+		return element;
+	}
 
+	// returns a string representation of the node and its child nodes
+	// in preorder notation
+	public String toString()
+	{  
+		String output = "" + this.element;
+		if (!isLeaf())
+		{  
+			output += "[ ";
+			for (MutableTreeNode childNode : children)
+				output += childNode + " ";   
+			output += "]";
+		}
+		return output;
+	}
 }

@@ -153,10 +153,10 @@ public class ListTreeNode<E> implements MutableTreeNode
       @SuppressWarnings("unchecked")
 	  Enumeration<MutableTreeNode> list = root.children();
       
-      //while (list.hasMoreElements())
-      //{
-    	//  System.out.print(list.nextElement(). + ", ");
-      //}
+      while (list.hasMoreElements())
+      {
+    	  System.out.print(list.nextElement() + ", ");
+      }
       
    }
 }
