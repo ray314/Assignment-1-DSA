@@ -1,0 +1,21 @@
+<!-- books.dtd document type definition -->
+<!-- Defines a list of books with an optional description --> 
+
+<!ELEMENT books (description?, book*)>
+
+<!ELEMENT description (#PCDATA)>
+  
+<!ELEMENT book (title, author+, pub?)>
+<!ATTLIST book
+   isbn CDATA #REQUIRED
+   cover (hard | soft) "hard"
+   edition CDATA #IMPLIED>
+   
+<!ELEMENT title (#PCDATA)>
+
+<!ELEMENT author (#PCDATA)>
+
+<!ELEMENT pub EMPTY>
+<!ATTLIST pub
+   name CDATA #REQUIRED
+   website CDATA #IMPLIED>
