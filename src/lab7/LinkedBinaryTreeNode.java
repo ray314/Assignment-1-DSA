@@ -179,7 +179,7 @@ public class LinkedBinaryTreeNode<E> implements MutableTreeNode {
 		{
 			throw new IllegalArgumentException("Index must be 0 or 1");
 		}
-		children.add(index, child);
+		children.add(child);
 		child.setParent(this);
 	}
 
@@ -226,10 +226,7 @@ public class LinkedBinaryTreeNode<E> implements MutableTreeNode {
 			throw new NoSuchElementException("Node not found");
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see javax.swing.tree.MutableTreeNode#removeFromParent()
-	 */
+	
 	@Override
 	public void removeFromParent() {
 		// TODO Auto-generated method stub
