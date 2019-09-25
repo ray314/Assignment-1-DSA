@@ -47,11 +47,12 @@ public class Driver {
 		//nodeC.insert(nodeC, 1);
 		System.out.println("Modified Tree: " + root);
 
-		//leftRotatedNode = TreeRotation.leftRotation(root);
-		//rightRotatedNode = TreeRotation.rightRotation(root);
-		rightLeftNode = TreeRotation.rightleftRotation(root);
+		leftRotatedNode = TreeRotation.leftRotation(root);
 		
-		System.out.println("Left rotation on node B: " + rightLeftNode);
+		System.out.println("Left rotation on node root: " + leftRotatedNode);
+		
+		rightRotatedNode = TreeRotation.rightRotation(root);
+		System.out.println("Right rotation on node root: " + rightRotatedNode);
 		
 		//@SuppressWarnings("unchecked")
 		//Enumeration<MutableTreeNode> list = root.children();
