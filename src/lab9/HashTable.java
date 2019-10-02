@@ -104,15 +104,15 @@ public class HashTable<E> {
 		Student[] student = new Student[9];
 		
 		
-		student[0] = new Student("Apple");
-		student[1] = new Student("Banana");
-		student[2] = new Student("Test");
-		student[3] = new Student("Lemon");
-		student[4] = new Student("Orange");
-		student[5] = new Student("Persimmon");
-		student[6] = new Student("The");
-		student[7] = new Student("Quack");
-		student[8] = new Student("Node");
+		student[0] = new Student("Apple", 20);
+		student[1] = new Student("Banana", 15);
+		student[2] = new Student("Test", 22);
+		student[3] = new Student("Lemon", 14);
+		student[4] = new Student("Orange", 10);
+		student[5] = new Student("Persimmon", 21);
+		student[6] = new Student("The", 12);
+		student[7] = new Student("Quack", 13);
+		student[8] = new Student("Node", 16);
 		
 		for (int i = 0; i < student.length; i++)
 		{

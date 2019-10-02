@@ -10,10 +10,12 @@ package lab9;
 public class Student {
 
 	private String name;
+	private int age;
 	
-	public Student(String name) {
+	public Student(String name, int age) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
+		this.age = age;
 	}
 	
 	@Override
@@ -31,7 +33,8 @@ public class Student {
 	
 	public String toString()
 	{
-		return name;
+		return String.format("Name: %s \n"
+				+ "Age: %d\n\n", name, age);
 	}
 
 }
