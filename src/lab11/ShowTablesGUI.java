@@ -27,6 +27,10 @@ import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.WindowConstants;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ShowTablesGUI extends JFrame implements ListSelectionListener{
 
@@ -35,12 +39,14 @@ public class ShowTablesGUI extends JFrame implements ListSelectionListener{
 	private static final String DRIVER = "com.mysql.jdbc.Driver";
 	private static final String DB_URL = "jdbc:mysql://raptor2:3306/testUnrestricted";
 	DefaultListModel<String> listModel;
-	private JTextArea textArea;
 	private Connection conn;
 	private JList<String> list;
 	private JScrollPane scrollPane;
 	private JScrollPane listScrollPane;
 	private JSplitPane splitPane;
+	private JPanel panel;
+	private JTextField textField;
+	private JButton btnNewButton;
 
 	/**
 	 * Launch the application.
@@ -138,15 +144,25 @@ public class ShowTablesGUI extends JFrame implements ListSelectionListener{
 		list.addListSelectionListener(this);
 		listScrollPane = new JScrollPane(list);
 		
-		
-		textArea = new JTextArea();
-		textArea.setEditable(false);
-		contentPane.add(textArea, BorderLayout.SOUTH);
-		
 		splitPane = new JSplitPane();
 		splitPane.setLeftComponent(listScrollPane);
 		splitPane.setRightComponent(scrollPane);
 		contentPane.add(splitPane, BorderLayout.CENTER);
+		
+		panel = new JPanel();
+		contentPane.add(panel, BorderLayout.NORTH);
+		
+		textField = new JTextField();
+		panel.add(textField);
+		textField.setColumns(10);
+		
+		btnNewButton = new JButton("Search");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				customQuery(textField.getText());
+			}
+		});
+		panel.add(btnNewButton);
 		
 		String text = new String();
 		String text2 = text;
@@ -164,6 +180,26 @@ public class ShowTablesGUI extends JFrame implements ListSelectionListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void customQuery(String command)
+	{
+		Statement stmt;
+		try {
+			stmt = conn.createStatement();
+			
+			System.out.println(command);
+			ResultSet rs = stmt.executeQuery(command);
+
+			ResultSetTableModel newModel = new ResultSetTableModel(rs);
+			table.setModel(newModel);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
 	}
 	
 	@Override
