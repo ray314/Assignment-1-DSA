@@ -1,5 +1,5 @@
 # Assignment-1-DSA
-This was done for my Data structures and Algorithms assignment in AUT
+This was done for my Data Structures and Algorithms paper at AUT
 
 This program below was making a LinkedSet and LinkedRRSet
 ![image](https://user-images.githubusercontent.com/12677108/118343064-ca52e580-b57a-11eb-8ab1-fce1e321b452.png)
