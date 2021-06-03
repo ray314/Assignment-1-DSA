@@ -16,7 +16,6 @@ public class SelectionSort {
 		// TODO Auto-generated method stub
 
 		int[] numbers = { 3, 1, 5 ,6 , 9, 8, 2 };
-
 		int length = numbers.length;
 		int smallest = 0;
 		int smallestIndex = 0;
